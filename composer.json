@@ -21,7 +21,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "HipstersgDemo\\LaravelUserDiscountsPackage"
+                "HipstersgDemo\\LaravelUserDiscountsPackage\\DiscountServiceProvider"
             ]
         }
     },
