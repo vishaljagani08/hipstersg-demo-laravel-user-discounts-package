@@ -1,0 +1,30 @@
+{
+    "name": "hipstersg-demo/laravel-user-discounts-package",
+    "description": "interview task",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "HipstersgDemo\\LaravelUserDiscountsPackage\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "vishal jagani",
+            "email": "vish2pate08@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "illuminate/support": "^12.0",
+        "illuminate/database": "^12.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "HipstersgDemo\\LaravelUserDiscountsPackage"
+            ]
+        }
+    },
+    "minimum-stability": "beta",
+    "prefer-stable": true
+}
