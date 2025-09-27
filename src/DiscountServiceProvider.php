@@ -2,6 +2,7 @@
 
 namespace HipstersgDemo\LaravelUserDiscountsPackage;
 
+use HipstersgDemo\LaravelUserDiscountsPackage\Services\DiscountManager;
 use Illuminate\Support\ServiceProvider;
 
 class DiscountServiceProvider extends ServiceProvider
@@ -16,6 +17,10 @@ class DiscountServiceProvider extends ServiceProvider
 
         // Load migrations from package's database/migrations directory
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        
+        $this->publishes([
+            __DIR__ . '/../database/seeders' => database_path('seeders'),
+        ], 'seeders');
 
 
         // Merge default config
@@ -26,7 +31,7 @@ class DiscountServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('discounts', function ($app) {
-            return new Services\DiscountManager($app->make('db'));
+            return new DiscountManager($app['db']->connection()); 
         });
 
         // Alias for container resolution

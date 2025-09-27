@@ -20,6 +20,7 @@ A reusable Laravel 12 package for deterministic user-level discounts with stacki
    If you need to tweak migrations, you can publish them:
    ```bash
    php artisan vendor:publish --provider="Vendor\\UserDiscounts\\DiscountServiceProvider" --tag=migrations
+   php artisan vendor:publish --provider="Vendor\\UserDiscounts\\DiscountServiceProvider" --tag=seeders
    ```
 
 ---
@@ -104,23 +105,4 @@ See `config/discounts.php` for options:
 - `default_per_user_cap`: fallback if discount doesn’t define one
 - `require_idempotency_key`: enforce unique apply calls
 
----
-## Acceptance Criteria Checklist ✅
-- Assign → eligible → apply with audits
-- Expired/inactive excluded
-- Usage caps enforced
-- Stacking + rounding correct
-- Revoked discounts ignored
-- Concurrency & idempotency safe
 
----
-## Roadmap
-- Multi-currency support
-- Advanced discount types (BOGO, tiered)
-- Admin panel integration (Nova/Filament plugin)
-
----
-### Done 🎉
-This package is ready to be plugged into your Laravel 12 projects.
-
-// End of Step 5 integration guide

@@ -15,7 +15,7 @@ class DiscountManager
     /**
      * Assign a discount to a user.
      */
-    public function assign($user, Discount $discount, array $meta = []): UserDiscount
+    public function assign($user, Discount $discount, array $meta = [])
     {
         $pivot = $discount->users()->syncWithoutDetaching([
             $user->id => [
@@ -90,10 +90,8 @@ class DiscountManager
                 ->wherePivotNull('revoked_at')
                 ->where('active', true)
                 ->where(function ($q) {
-                    $q->whereNull('starts_at')->orWhere('starts_at', '<=', now());
-                })
-                ->where(function ($q) {
-                    $q->whereNull('ends_at')->orWhere('ends_at', '>=', now());
+                    $q->whereNull('starts_at')->orWhere('starts_at', '<=', now()) 
+                        ->whereNull('ends_at')->orWhere('ends_at', '>=', now());
                 })
                 ->orderBy('stacking_priority', 'desc')
                 ->get();
@@ -101,8 +99,6 @@ class DiscountManager
             $originalAmount = $amount;
             foreach ($discounts as $discount) {
                 if (!$this->eligibleFor($user, $discount)) continue;
-
-                $before = $amount;
 
                 if ($discount->type === 'percentage') {
                     $amount -= ($amount * ($discount->value / 100));

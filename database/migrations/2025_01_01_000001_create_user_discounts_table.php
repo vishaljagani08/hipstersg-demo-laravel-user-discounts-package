@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->timestamp('assigned_at');
             $table->timestamp('revoked_at')->nullable();
             $table->unsignedInteger('usage_count')->default(0);
+            $table->json('meta')->nullable(); 
             $table->timestamps();
 
 
