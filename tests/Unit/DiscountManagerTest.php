@@ -1,41 +1,43 @@
 <?php
-namespace HipstersgDemo\LaravelUserDiscountsPackage\Tests\Unit;
 
-use HipstersgDemo\LaravelUserDiscountsPackage\Tests\TestCase; // 👈 extend package TestCase
 use HipstersgDemo\LaravelUserDiscountsPackage\Models\Discount;
 use HipstersgDemo\LaravelUserDiscountsPackage\Models\UserDiscount;
 use HipstersgDemo\LaravelUserDiscountsPackage\Services\DiscountManager;
-use Illuminate\Support\Facades\Event;
-use App\Models\User; // comes from Laravel default migrations
 use HipstersgDemo\LaravelUserDiscountsPackage\Events\DiscountApplied;
+use Illuminate\Support\Facades\Event;
+use App\Models\User;
 
-class DiscountManagerTest extends TestCase
-{
-    /** @test */
-    public function it_applies_a_discount_and_respects_per_user_cap()
-    {
-        Event::fake();
+it('applies a discount and respects per user cap', function () {
 
-        $user = User::factory()->create();
+    Event::fake();
 
-        $discount = Discount::create([
-            'code' => 'WELCOME10',
-            'type' => 'percentage',
-            'value' => 10,
-            'active' => true,
-            'per_user_cap' => 1,
-        ]);
+    $user = User::factory()->create();
 
-        $this->app->make(DiscountManager::class)->assign($user, $discount);
+    $discount = Discount::create([
+        'code' => 'WELCOME10',
+        'type' => 'percentage',
+        'value' => 10,
+        'active' => true,
+        'per_user_cap' => 1, // only one usage allowed
+    ]);
 
-        $result1 = $this->app->make(DiscountManager::class)->apply($user, 100.00);
-        $this->assertEquals(90.00, $result1);
+    $manager = app(DiscountManager::class);
 
-        $result2 = $this->app->make(DiscountManager::class)->apply($user, 100.00);
-        $this->assertEquals(100.00, $result2);
+    // assign discount
+    $manager->assign($user, $discount);
 
-        $this->assertEquals(1, UserDiscount::first()->usage_count);
+    // apply first time
+    $amountAfterFirstApply = $manager->apply($user, 100.00);
+    expect($amountAfterFirstApply)->toBe(90.00);
 
-        Event::assertDispatchedTimes(DiscountApplied::class, 1);
-    }
-}
+    // apply second time → should not apply
+    $amountAfterSecondApply = $manager->apply($user, 100.00);
+    expect($amountAfterSecondApply)->toBe(100.00);
+
+    // usage count incremented only once
+    $userDiscount = UserDiscount::first();
+    expect($userDiscount->usage_count)->toBe(1);
+
+    // event dispatched once
+    Event::assertDispatchedTimes(DiscountApplied::class, 1);
+});

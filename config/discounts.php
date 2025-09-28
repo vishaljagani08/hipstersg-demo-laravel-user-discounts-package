@@ -32,7 +32,4 @@ return [
     // Auditing
     'audit_table' => 'discount_audits',
 
-
-    // Idempotency key required for apply() (recommended to prevent duplicates)
-    'require_idempotency_key' => false,
 ];
